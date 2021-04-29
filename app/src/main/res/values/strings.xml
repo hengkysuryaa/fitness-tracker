@@ -4,7 +4,11 @@
     <string name="title_dashboard">Tracker</string>
     <string name="title_notifications">History</string>
     <string name="title_schedule">Scheduler</string>
+    <string name="title_add_schedule">Add Schedule</string>
     <string name="title_activity_scheduler">SchedulerActivity</string>
+    <string name="button_save">Add</string>
+    <string name="type_cycling">Cycling</string>
+    <string name="type_run">Running</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
