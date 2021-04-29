@@ -8,7 +8,10 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.workout.R
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 
 class ScheduleFragment : Fragment() {
 
@@ -26,6 +29,12 @@ class ScheduleFragment : Fragment() {
         scheduleViewModel.text.observe(viewLifecycleOwner, Observer {
             textView.text = it
         })
+
+
+        root.findViewById<FloatingActionButton>(R.id.fab).setOnClickListener {
+            findNavController().navigate(R.id.action_navigation_schedule_to_addScheduleFragment)
+        }
+
         return root
     }
 
