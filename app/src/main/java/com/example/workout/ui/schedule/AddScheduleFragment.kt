@@ -6,6 +6,7 @@ import android.app.PendingIntent
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
+import android.database.Cursor
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.os.SystemClock
@@ -47,6 +48,7 @@ class AddScheduleFragment : Fragment() {
         val radioView: RadioGroup = root.findViewById(R.id.radio_group)
         val typeTrackView: RadioGroup = root.findViewById(R.id.track_type)
         val cal = Calendar.getInstance()
+        val dbHandler = DBHelper(requireContext(), null)
 
         root.findViewById<Button>(R.id.button_add).setOnClickListener {view ->
             findNavController().navigate(R.id.action_navigation_add_schedule_to_navigation_schedule)
@@ -57,12 +59,12 @@ class AddScheduleFragment : Fragment() {
             val fieldStep: EditText = root.findViewById(R.id.field_steps)
             var msgNotif: String = fieldStep.text.toString()
             val radioType: RadioButton = root.findViewById(typeTrackView.checkedRadioButtonId)
-
+            val autoTrack: Boolean = root.findViewById<CheckBox>(R.id.input_autotrack).isChecked
             if (radioType.text.toString() == "Cycling"){
                 //titleNotif = "Cycling"
                 msgNotif = fieldKm.text.toString()
             }
-
+            var repeatDay: String = ""
             Log.d("MainActivity",msgNotif)
             if (msgNotif.isNotEmpty()) {
                 when (radioView.checkedRadioButtonId) {
@@ -102,36 +104,43 @@ class AddScheduleFragment : Fragment() {
                                         Calendar.MONDAY, radioType.text.toString(), msgNotif)
                                 setParticularDayEndAlarm(requireContext(), pickEndTime.text.toString(),
                                         Calendar.MONDAY, radioType.text.toString(), msgNotif)
+                                repeatDay = "$repeatDay MON"
                             } else if (root.findViewById<CheckBox>(R.id.checkbox_tue).isChecked) {
                                 setParticularDayAlarm(requireContext(), pickStartTime.text.toString(),
                                         Calendar.TUESDAY, radioType.text.toString(), msgNotif)
                                 setParticularDayEndAlarm(requireContext(), pickEndTime.text.toString(),
                                         Calendar.TUESDAY, radioType.text.toString(), msgNotif)
+                                repeatDay = "$repeatDay TUE"
                             } else if (root.findViewById<CheckBox>(R.id.checkbox_wed).isChecked) {
                                 setParticularDayAlarm(requireContext(), pickStartTime.text.toString(),
                                         Calendar.WEDNESDAY, radioType.text.toString(), msgNotif)
                                 setParticularDayEndAlarm(requireContext(), pickEndTime.text.toString(),
                                         Calendar.WEDNESDAY, radioType.text.toString(), msgNotif)
+                                repeatDay = "$repeatDay WED"
                             } else if (root.findViewById<CheckBox>(R.id.checkbox_thu).isChecked) {
                                 setParticularDayAlarm(requireContext(), pickStartTime.text.toString(),
                                         Calendar.THURSDAY, radioType.text.toString(), msgNotif)
                                 setParticularDayEndAlarm(requireContext(), pickEndTime.text.toString(),
                                         Calendar.THURSDAY, radioType.text.toString(), msgNotif)
+                                repeatDay = "$repeatDay THU"
                             } else if (root.findViewById<CheckBox>(R.id.checkbox_fri).isChecked) {
                                 setParticularDayAlarm(requireContext(), pickStartTime.text.toString(),
                                         Calendar.FRIDAY, radioType.text.toString(), msgNotif)
                                 setParticularDayEndAlarm(requireContext(), pickEndTime.text.toString(),
                                         Calendar.FRIDAY, radioType.text.toString(), msgNotif)
+                                repeatDay = "$repeatDay FRI"
                             } else if (root.findViewById<CheckBox>(R.id.checkbox_sat).isChecked) {
                                 setParticularDayAlarm(requireContext(), pickStartTime.text.toString(),
                                         Calendar.SATURDAY, radioType.text.toString(), msgNotif)
                                 setParticularDayEndAlarm(requireContext(), pickEndTime.text.toString(),
                                         Calendar.SATURDAY, radioType.text.toString(), msgNotif)
+                                repeatDay = "$repeatDay SAT"
                             } else if (root.findViewById<CheckBox>(R.id.checkbox_sun).isChecked) {
                                 setParticularDayAlarm(requireContext(), pickStartTime.text.toString(),
                                         Calendar.SUNDAY, radioType.text.toString(), msgNotif)
                                 setParticularDayEndAlarm(requireContext(), pickEndTime.text.toString(),
                                         Calendar.SUNDAY, radioType.text.toString(), msgNotif)
+                                repeatDay = "$repeatDay SUN"
                             }
                         }
                 }
@@ -143,6 +152,17 @@ class AddScheduleFragment : Fragment() {
             }
            else {
                 showtext = "Schedule added!"
+                val schedule = Schedule(
+                        radioType.text.toString(),
+                        "Once",
+                        pickDate.text.toString(),
+                        pickStartTime.text.toString(),
+                        pickEndTime.text.toString(),
+                        repeatDay,
+                        autoTrack.toString(),
+                        msgNotif
+                )
+                dbHandler.addSchedule(schedule)
             }
             Snackbar.make(view, showtext, Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show()
