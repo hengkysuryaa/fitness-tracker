@@ -2,6 +2,7 @@ package com.example.workout.ui.home
 
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,6 +33,7 @@ class RecyclerAdapter(
 
                 val intent = Intent(Intent.ACTION_VIEW)
                 intent.data = Uri.parse(links[position])
+                Log.d("URI : ", Uri.parse(links[position]).toString())
                 ContextCompat.startActivity(itemView.context, intent, null)
             }
         }
