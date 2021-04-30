@@ -207,6 +207,13 @@
             android:text="Sun"/>
     </LinearLayout>
 
+    <CheckBox
+        android:id="@+id/input_autotrack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="@string/autotrack"/>
+
     <Button
         android:id="@+id/button_add"
         android:layout_width="match_parent"
